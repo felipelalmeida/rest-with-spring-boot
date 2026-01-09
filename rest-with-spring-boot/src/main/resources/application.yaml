@@ -1,1 +1,19 @@
-spring.application.name=rest-with-spring-boot
+spring:
+  application:
+    name: rest-with-spring-boot
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+    show-sql: false
+    open-in-view: false
+logging:
+  level:
+    root: WARN
+    com.felipelalmeida: DEBUG
