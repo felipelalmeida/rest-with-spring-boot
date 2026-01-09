@@ -1,21 +1,21 @@
-package com.felipelalmeida.data.dto.v2;
+package com.felipelalmeida.data.dto;
+
+import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Objects;
 
-public class PersonDTOV2 implements Serializable {
+public class PersonDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
     private String firstName;
     private String lastName;
-    private Date birthDate;
     private String address;
     private String gender;
 
-    public PersonDTOV2() {
+    public PersonDTO() {
     }
 
     public Long getId() {
@@ -58,22 +58,14 @@ public class PersonDTOV2 implements Serializable {
         this.gender = gender;
     }
 
-    public Date getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof PersonDTOV2 that)) return false;
-        return Objects.equals(getId(), that.getId()) && Objects.equals(getFirstName(), that.getFirstName()) && Objects.equals(getLastName(), that.getLastName()) && Objects.equals(getBirthDate(), that.getBirthDate()) && Objects.equals(getAddress(), that.getAddress()) && Objects.equals(getGender(), that.getGender());
+        if (!(o instanceof PersonDTO person)) return false;
+        return Objects.equals(getId(), person.getId()) && Objects.equals(getFirstName(), person.getFirstName()) && Objects.equals(getLastName(), person.getLastName()) && Objects.equals(getAddress(), person.getAddress()) && Objects.equals(getGender(), person.getGender());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getFirstName(), getLastName(), getBirthDate(), getAddress(), getGender());
+        return Objects.hash(getId(), getFirstName(), getLastName(), getAddress(), getGender());
     }
 }
