@@ -1,7 +1,9 @@
 package com.felipelalmeida.services;
 
-import com.felipelalmeida.data.dto.PersonDTO;
+import com.felipelalmeida.data.dto.v1.PersonDTO;
+import com.felipelalmeida.data.dto.v2.PersonDTOV2;
 import com.felipelalmeida.exception.ResourceNotFoundException;
+import com.felipelalmeida.mapper.custom.PersonMapper;
 import com.felipelalmeida.model.Person;
 import com.felipelalmeida.repository.PersonRepository;
 import org.slf4j.Logger;
@@ -24,6 +26,8 @@ public class PersonServices {
     @Autowired
     PersonRepository repository;
 
+    @Autowired
+    PersonMapper converter;
 
     public List<PersonDTO> findAll(){
         logger.info("Find all people!");
@@ -40,6 +44,12 @@ public class PersonServices {
         logger.info("Creating one Person!");
         var entity = parseObject(person, Person.class);
         return parseObject(repository.save(entity), PersonDTO.class);
+    }
+
+    public PersonDTOV2 createV2(PersonDTOV2 person) {
+        logger.info("Creating one Person V2!");
+        var entity = converter.convertDTOtoEntity(person);
+        return converter.convertEntityToDTO(repository.save(entity));
     }
 
     public PersonDTO update(PersonDTO person) {

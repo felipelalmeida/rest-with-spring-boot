@@ -3,7 +3,7 @@ package com.felipelalmeida.unitetests.mapper.mocks;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.felipelalmeida.data.dto.PersonDTO;
+import com.felipelalmeida.data.dto.v1.PersonDTO;
 import com.felipelalmeida.model.Person;
 
 public class MockPerson {
