@@ -1,7 +1,6 @@
 package com.felipelalmeida.controllers;
 
 import com.felipelalmeida.data.dto.PersonDTO;
-import com.felipelalmeida.model.Person;
 import com.felipelalmeida.services.PersonServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
