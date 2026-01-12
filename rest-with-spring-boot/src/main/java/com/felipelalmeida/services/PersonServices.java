@@ -2,6 +2,7 @@ package com.felipelalmeida.services;
 
 import com.felipelalmeida.controllers.PersonController;
 import com.felipelalmeida.data.dto.PersonDTO;
+import com.felipelalmeida.exception.RequiredObjectIsNullException;
 import com.felipelalmeida.exception.ResourceNotFoundException;
 import com.felipelalmeida.model.Person;
 import com.felipelalmeida.repository.PersonRepository;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import static com.felipelalmeida.mapper.ObjectMapper.parseListObjects;
 import static com.felipelalmeida.mapper.ObjectMapper.parseObject;
@@ -21,7 +21,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service
 public class PersonServices {
 
-    private final AtomicLong counter = new AtomicLong();
     private Logger logger = LoggerFactory.getLogger(PersonServices.class.getName());
 
     @Autowired
@@ -45,6 +44,8 @@ public class PersonServices {
     }
 
     public PersonDTO create(PersonDTO person) {
+        if (person == null) throw new RequiredObjectIsNullException();
+
         logger.info("Creating one Person!");
         var entity = parseObject(person, Person.class);
         var dto = parseObject(repository.save(entity), PersonDTO.class);
@@ -53,6 +54,8 @@ public class PersonServices {
     }
 
     public PersonDTO update(PersonDTO person) {
+        if (person == null) throw new RequiredObjectIsNullException();
+
         logger.info("Updating one Person!");
 
         Person entity = repository.findById(person.getId()).orElseThrow(() -> new ResourceNotFoundException("No records found for this id!"));
