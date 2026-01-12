@@ -1,12 +1,13 @@
 package com.felipelalmeida.data.dto;
 
 import jakarta.persistence.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-public class BookDTO implements Serializable {
+public class BookDTO extends RepresentationModel<BookDTO> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
