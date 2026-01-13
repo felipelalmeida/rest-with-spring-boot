@@ -1,7 +1,9 @@
 package com.felipelalmeida.controllers;
 
+import com.felipelalmeida.controllers.docs.BookControllerDocs;
 import com.felipelalmeida.data.dto.BookDTO;
 import com.felipelalmeida.services.BookServices;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +13,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/book/v1")
-public class BookController {
+@Tag(name = "Books", description = "Endpoints for managing books")
+public class BookController implements BookControllerDocs {
 
     @Autowired
     private BookServices service;
@@ -23,6 +26,7 @@ public class BookController {
             MediaType.APPLICATION_YAML_VALUE
         }
     )
+    @Override
     public List<BookDTO> findAll(){
        return service.findAll();
     }
@@ -33,6 +37,7 @@ public class BookController {
             MediaType.APPLICATION_XML_VALUE,
             MediaType.APPLICATION_YAML_VALUE
         })
+    @Override
     public BookDTO findById(@PathVariable("id") Long id){
         return service.findById(id);
     }
@@ -49,6 +54,7 @@ public class BookController {
                 MediaType.APPLICATION_YAML_VALUE
         }
     )
+    @Override
     public BookDTO create(@RequestBody BookDTO book){
         return service.create(book);
     }
@@ -65,11 +71,13 @@ public class BookController {
                 MediaType.APPLICATION_YAML_VALUE
         }
     )
+    @Override
     public BookDTO update(@RequestBody BookDTO book){
         return service.update(book);
     }
 
     @DeleteMapping(value = "{id}")
+    @Override
     public ResponseEntity<?> delete(@PathVariable("id") Long id){
         service.delete(id);
         return ResponseEntity.noContent().build();
