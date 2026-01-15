@@ -1,4 +1,4 @@
-package com.felipelalmeida.unitetests.mapper.mocks;
+package com.felipelalmeida.unittests.mapper.mocks;
 
 import com.felipelalmeida.data.dto.BookDTO;
 import com.felipelalmeida.model.Book;

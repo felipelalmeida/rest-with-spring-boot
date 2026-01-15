@@ -1,4 +1,4 @@
-package com.felipelalmeida.services;
+package com.felipelalmeida.unittests.services;
 
 import com.felipelalmeida.controllers.BookController;
 import com.felipelalmeida.data.dto.BookDTO;
@@ -7,7 +7,6 @@ import com.felipelalmeida.exception.ResourceNotFoundException;
 import static com.felipelalmeida.mapper.ObjectMapper.*;
 
 import com.felipelalmeida.model.Book;
-import com.felipelalmeida.model.Person;
 import com.felipelalmeida.repository.BookRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.felipelalmeida.unitetests.mapper.mocks;
+package com.felipelalmeida.unittests.mapper.mocks;
 
 import java.util.ArrayList;
 import java.util.List;

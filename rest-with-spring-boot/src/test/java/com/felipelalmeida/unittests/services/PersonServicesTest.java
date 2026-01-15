@@ -1,10 +1,10 @@
-package com.felipelalmeida.services;
+package com.felipelalmeida.unittests.services;
 
 import com.felipelalmeida.data.dto.PersonDTO;
 import com.felipelalmeida.exception.RequiredObjectIsNullException;
 import com.felipelalmeida.model.Person;
 import com.felipelalmeida.repository.PersonRepository;
-import com.felipelalmeida.unitetests.mapper.mocks.MockPerson;
+import com.felipelalmeida.unittests.mapper.mocks.MockPerson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
