@@ -1,4 +1,4 @@
-package com.felipelalmeida.unittests.services;
+package com.felipelalmeida.services;
 
 import com.felipelalmeida.controllers.PersonController;
 import com.felipelalmeida.data.dto.PersonDTO;

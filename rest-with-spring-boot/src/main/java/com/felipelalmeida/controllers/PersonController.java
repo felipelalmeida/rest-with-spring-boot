@@ -2,7 +2,7 @@ package com.felipelalmeida.controllers;
 
 import com.felipelalmeida.controllers.docs.PersonControllerDocs;
 import com.felipelalmeida.data.dto.PersonDTO;
-import com.felipelalmeida.unittests.services.PersonServices;
+import com.felipelalmeida.services.PersonServices;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
