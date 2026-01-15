@@ -1,10 +1,10 @@
-package com.felipelalmeida.services;
+package com.felipelalmeida.unittests.services;
 
 import com.felipelalmeida.data.dto.BookDTO;
 import com.felipelalmeida.exception.RequiredObjectIsNullException;
 import com.felipelalmeida.model.Book;
 import com.felipelalmeida.repository.BookRepository;
-import com.felipelalmeida.unitetests.mapper.mocks.MockBook;
+import com.felipelalmeida.unittests.mapper.mocks.MockBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;

@@ -1,4 +1,4 @@
-package com.felipelalmeida.unitetests.mapper;
+package com.felipelalmeida.unittests.mapper;
 import static com.felipelalmeida.mapper.ObjectMapper.parseListObjects;
 import static com.felipelalmeida.mapper.ObjectMapper.parseObject;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 
 import com.felipelalmeida.data.dto.PersonDTO;
-import com.felipelalmeida.unitetests.mapper.mocks.MockPerson;
+import com.felipelalmeida.unittests.mapper.mocks.MockPerson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
