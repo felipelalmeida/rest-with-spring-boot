@@ -1,8 +1,14 @@
 package com.felipelalmeida.integrationtests.dto;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.Serializable;
 import java.util.Objects;
 
+@XmlRootElement(name = "Person")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class PersonDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
