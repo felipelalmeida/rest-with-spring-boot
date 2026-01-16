@@ -6,6 +6,7 @@ import com.felipelalmeida.exception.RequiredObjectIsNullException;
 import com.felipelalmeida.exception.ResourceNotFoundException;
 import com.felipelalmeida.model.Person;
 import com.felipelalmeida.repository.PersonRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,6 @@ public class PersonServices {
 
     @Autowired
     PersonRepository repository;
-
 
     public List<PersonDTO> findAll(){
         logger.info("Find all people!");
@@ -78,11 +78,23 @@ public class PersonServices {
         repository.delete(entity);
     }
 
+    @Transactional
+    public PersonDTO disablePerson(Long id){
+        logger.info("Disabling one Person!");
+
+        repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this id!"));
+        repository.disablePerson(id);
+        var entity = repository.findById(id).get();
+        var dto = parseObject(entity, PersonDTO.class);
+        addHateoasLinks(dto);
+        return dto;
+    }
+
     private void addHateoasLinks(PersonDTO dto) {
         dto.add(linkTo(methodOn(PersonController.class).findById(dto.getId())).withSelfRel().withType("GET"));
         dto.add(linkTo(methodOn(PersonController.class).findAll()).withRel("findAll").withType("GET"));
         dto.add(linkTo(methodOn(PersonController.class).create(dto)).withRel("create").withType("POST"));
-        dto.add(linkTo(methodOn(PersonController.class).update(dto)).withRel("create").withType("PUT"));
+        dto.add(linkTo(methodOn(PersonController.class).disablePerson(dto.getId())).withRel("disable").withType("PATCH"));
         dto.add(linkTo(methodOn(PersonController.class).delete(dto.getId())).withRel("delete").withType("DELETE"));
     }
 

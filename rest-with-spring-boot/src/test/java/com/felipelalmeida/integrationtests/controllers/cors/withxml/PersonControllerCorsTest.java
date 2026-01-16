@@ -1,8 +1,9 @@
-package com.felipelalmeida.integrationtests.controllers.whithjson;
+package com.felipelalmeida.integrationtests.controllers.cors.withxml;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.felipelalmeida.config.TestConfigs;
 import com.felipelalmeida.integrationtests.dto.PersonDTO;
 import com.felipelalmeida.integrationtests.testcontainers.AbstractIntegrationTest;
@@ -11,7 +12,6 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.specification.RequestSpecification;
-import org.aspectj.weaver.ast.Or;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class PersonControllerTest extends AbstractIntegrationTest {
+class PersonControllerCorsTest extends AbstractIntegrationTest {
 
     private static RequestSpecification specification;
     private static ObjectMapper objectMapper;
@@ -29,7 +29,7 @@ class PersonControllerTest extends AbstractIntegrationTest {
 
     @BeforeAll
     static void setUp() {
-        objectMapper = new ObjectMapper();
+        objectMapper = new XmlMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         person = new PersonDTO();
     }
@@ -48,12 +48,14 @@ class PersonControllerTest extends AbstractIntegrationTest {
                 .build();
 
         var content = given(specification)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_XML_VALUE)
+                .accept(MediaType.APPLICATION_XML_VALUE)
                 .body(person)
                 .when()
                 .post()
                 .then()
                 .statusCode(200)
+                .contentType(MediaType.APPLICATION_XML_VALUE)
                 .extract()
                 .body()
                 .asString();
@@ -72,6 +74,7 @@ class PersonControllerTest extends AbstractIntegrationTest {
         assertEquals("Almeida", createdPerson.getLastName());
         assertEquals("Santa Rosa - Brasil", createdPerson.getAddress());
         assertEquals("Male", createdPerson.getGender());
+        assertTrue(createdPerson.getEnabled());
     }
 
     @Test
@@ -88,7 +91,8 @@ class PersonControllerTest extends AbstractIntegrationTest {
                 .build();
 
         var content = given(specification)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_XML_VALUE)
+                .accept(MediaType.APPLICATION_XML_VALUE)
                 .body(person)
                 .when()
                 .post()
@@ -101,6 +105,46 @@ class PersonControllerTest extends AbstractIntegrationTest {
         assertEquals("Invalid CORS request", content);
     }
 
+    @Test
+    @Order(3)
+    void findById() throws JsonProcessingException {
+        specification = new RequestSpecBuilder()
+                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_LOCAL)
+                .setBasePath("/api/person/v1")
+                .setPort(TestConfigs.SERVER_PORT)
+                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
+                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+                .build();
+
+        var content = given(specification)
+                .contentType(MediaType.APPLICATION_XML_VALUE)
+                .accept(MediaType.APPLICATION_XML_VALUE)
+                .pathParam("id", person.getId())
+                .when()
+                .get("{id}")
+                .then()
+                .statusCode(200)
+                .contentType(MediaType.APPLICATION_XML_VALUE)
+                .extract()
+                .body()
+                .asString();
+
+        PersonDTO createdPerson = objectMapper.readValue(content, PersonDTO.class);
+        person = createdPerson;
+        assertNotNull(createdPerson.getId());
+        assertNotNull(createdPerson.getFirstName());
+        assertNotNull(createdPerson.getLastName());
+        assertNotNull(createdPerson.getAddress());
+        assertNotNull(createdPerson.getGender());
+
+        assertTrue(createdPerson.getId() > 0);
+
+        assertEquals("Felipe", createdPerson.getFirstName());
+        assertEquals("Almeida", createdPerson.getLastName());
+        assertEquals("Santa Rosa - Brasil", createdPerson.getAddress());
+        assertEquals("Male", createdPerson.getGender());
+        assertTrue(createdPerson.getEnabled());
+    }
 
 
     @Test
@@ -115,7 +159,8 @@ class PersonControllerTest extends AbstractIntegrationTest {
                 .build();
 
         var content = given(specification)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_XML_VALUE)
+                .accept(MediaType.APPLICATION_XML_VALUE)
                 .pathParam("id", person.getId())
                 .when()
                 .get("{id}")
@@ -131,7 +176,7 @@ class PersonControllerTest extends AbstractIntegrationTest {
     @Test
     @Order(5)
     void update() throws JsonProcessingException {
-        mockUpdatePerson();
+        person.setLastName("Teste");
 
         specification = new RequestSpecBuilder()
                 .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_ERUDIO)
@@ -142,12 +187,14 @@ class PersonControllerTest extends AbstractIntegrationTest {
                 .build();
 
         var content = given(specification)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_XML_VALUE)
+                .accept(MediaType.APPLICATION_XML_VALUE)
                 .body(person)
                 .when()
                 .put()
                 .then()
                 .statusCode(200)
+                .contentType(MediaType.APPLICATION_XML_VALUE)
                 .extract()
                 .body()
                 .asString();
@@ -166,12 +213,13 @@ class PersonControllerTest extends AbstractIntegrationTest {
         assertEquals("Teste", createdPerson.getLastName());
         assertEquals("Santa Rosa - Brasil", createdPerson.getAddress());
         assertEquals("Male", createdPerson.getGender());
+        assertTrue(createdPerson.getEnabled());
     }
 
     @Test
     @Order(6)
     void updateWithWrongOrigin() {
-        mockUpdatePerson();
+        person.setLastName("Teste");
 
         specification = new RequestSpecBuilder()
                 .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_SEMERU)
@@ -182,7 +230,8 @@ class PersonControllerTest extends AbstractIntegrationTest {
                 .build();
 
         var content = given(specification)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_XML_VALUE)
+                .accept(MediaType.APPLICATION_XML_VALUE)
                 .body(person)
                 .when()
                 .put()
@@ -206,13 +255,12 @@ class PersonControllerTest extends AbstractIntegrationTest {
                 .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
                 .build();
 
-        var content = given(specification)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .pathParam("id", person.getId())
-                .when()
-                .delete("{id}")
-                .then()
-                .statusCode(204);
+        given(specification)
+            .pathParam("id", person.getId())
+            .when()
+            .delete("{id}")
+            .then()
+            .statusCode(204);
     }
 
     @Test
@@ -251,11 +299,13 @@ class PersonControllerTest extends AbstractIntegrationTest {
                 .build();
 
         var content = given(specification)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_XML_VALUE)
+                .accept(MediaType.APPLICATION_XML_VALUE)
                 .when()
                 .get()
                 .then()
                 .statusCode(200)
+                .contentType(MediaType.APPLICATION_XML_VALUE)
                 .extract()
                 .body()
                 .asString();
@@ -272,6 +322,7 @@ class PersonControllerTest extends AbstractIntegrationTest {
         assertNotNull(personOne.getLastName());
         assertNotNull(personOne.getAddress());
         assertNotNull(personOne.getGender());
+        assertNotNull(personOne.getEnabled());
 
         PersonDTO personFour = people[3];
 
@@ -280,6 +331,7 @@ class PersonControllerTest extends AbstractIntegrationTest {
         assertNotNull(personFour.getLastName());
         assertNotNull(personFour.getAddress());
         assertNotNull(personFour.getGender());
+        assertNotNull(personFour.getEnabled());
     }
 
     @Test
@@ -294,7 +346,8 @@ class PersonControllerTest extends AbstractIntegrationTest {
                 .build();
 
         var content = given(specification)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_XML_VALUE)
+                .accept(MediaType.APPLICATION_XML_VALUE)
                 .when()
                 .get()
                 .then()
@@ -311,12 +364,6 @@ class PersonControllerTest extends AbstractIntegrationTest {
         person.setLastName("Almeida");
         person.setAddress("Santa Rosa - Brasil");
         person.setGender("Male");
-    }
-
-    private void mockUpdatePerson() {
-        person.setFirstName("Felipe");
-        person.setLastName("Teste");
-        person.setAddress("Santa Rosa - Brasil");
-        person.setGender("Male");
+        person.setEnabled(true);
     }
 }
