@@ -26,6 +26,8 @@
 		<dozer.version>7.0.0</dozer.version>
 		<springdoc.version>2.7.0</springdoc.version>
 		<testcontainers.version>2.0.2</testcontainers.version>
+		<apachepoi.version>5.5.1</apachepoi.version>
+		<commonscsv.version>1.14.1</commonscsv.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -97,6 +99,20 @@
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>${commonscsv.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${apachepoi.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
