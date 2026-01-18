@@ -5,7 +5,6 @@ import com.felipelalmeida.data.dto.PersonDTO;
 import com.felipelalmeida.services.PersonServices;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,6 +14,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -82,6 +82,18 @@ public class PersonController implements PersonControllerDocs {
     public PersonDTO create(@RequestBody PersonDTO person) {
         return service.create(person);
     }
+
+    @PostMapping(value = "/massCreation",
+            produces = {
+                    MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_YAML_VALUE}
+    )
+    @Override
+    public List<PersonDTO> massCreation(@RequestParam("file") MultipartFile file) {
+        return service.massCreation(file);
+    }
+
 
     @PutMapping(
             consumes = {

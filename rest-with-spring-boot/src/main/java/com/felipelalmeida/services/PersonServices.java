@@ -76,7 +76,7 @@ public class PersonServices {
         return dto;
     }
 
-    public List<PersonDTO> massCreation(MultipartFile file) throws Exception {
+    public List<PersonDTO> massCreation(MultipartFile file) {
         logger.info("Importing people from file!");
         if (file.isEmpty()) throw new BadRequestException("Please set a valid file!");
         try (InputStream inputStream = file.getInputStream()) {
