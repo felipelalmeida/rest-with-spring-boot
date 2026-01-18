@@ -26,8 +26,8 @@
 		<dozer.version>7.0.0</dozer.version>
 		<springdoc.version>2.7.0</springdoc.version>
 		<testcontainers.version>2.0.2</testcontainers.version>
-		<apachepoi.version>5.5.1</apachepoi.version>
-		<commonscsv.version>1.14.1</commonscsv.version>
+		<apachepoi.version>5.3.0</apachepoi.version>
+		<commonscsv.version>1.12.0</commonscsv.version>
 	</properties>
 	<dependencies>
 		<dependency>
