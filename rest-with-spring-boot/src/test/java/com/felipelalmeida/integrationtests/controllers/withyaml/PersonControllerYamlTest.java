@@ -1,12 +1,10 @@
-package com.felipelalmeida.integrationtests.controllers.whithyaml;
+package com.felipelalmeida.integrationtests.controllers.withyaml;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.felipelalmeida.config.TestConfigs;
-import com.felipelalmeida.integrationtests.controllers.whithyaml.mapper.YAMLMapper;
+import com.felipelalmeida.integrationtests.controllers.withyaml.mapper.YAMLMapper;
 import com.felipelalmeida.integrationtests.dto.PersonDTO;
+import com.felipelalmeida.integrationtests.dto.wrappers.xmlandyaml.PagedModelPerson;
 import com.felipelalmeida.integrationtests.testcontainers.AbstractIntegrationTest;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.EncoderConfig;
@@ -20,7 +18,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
@@ -210,6 +207,7 @@ class PersonControllerYamlTest extends AbstractIntegrationTest {
         var response = given(specification)
                 .contentType(MediaType.APPLICATION_YAML_VALUE)
                 .accept(MediaType.APPLICATION_YAML_VALUE)
+                .queryParams("page", 3, "size", 12, "direction", "asc")
                 .when()
                 .get()
                 .then()
@@ -217,27 +215,26 @@ class PersonControllerYamlTest extends AbstractIntegrationTest {
                 .contentType(MediaType.APPLICATION_YAML_VALUE)
                 .extract()
                 .body()
-                .as(PersonDTO[].class, objectMapper);
+                .as(PagedModelPerson.class, objectMapper);
 
-        List<PersonDTO> people = Arrays.asList(response);
+        List<PersonDTO> people = response.getContent();
 
         PersonDTO personOne = people.getFirst();
 
-        assertNotNull(personOne.getId());
-        assertNotNull(personOne.getFirstName());
-        assertNotNull(personOne.getLastName());
-        assertNotNull(personOne.getAddress());
-        assertNotNull(personOne.getGender());
-        assertNotNull(personOne.getEnabled());
+        assertEquals("Allin", personOne.getFirstName());
+        assertEquals("Emmot", personOne.getLastName());
+        assertEquals("7913 Lindbergh Way", personOne.getAddress());
+        assertEquals("Male", personOne.getGender());
+        assertFalse(personOne.getEnabled());
+
 
         PersonDTO personFour = people.get(3);
 
-        assertNotNull(personFour.getId());
-        assertNotNull(personFour.getFirstName());
-        assertNotNull(personFour.getLastName());
-        assertNotNull(personFour.getAddress());
-        assertNotNull(personFour.getGender());
-        assertNotNull(personFour.getEnabled());
+        assertEquals("Almeria", personFour.getFirstName());
+        assertEquals("Curm", personFour.getLastName());
+        assertEquals("34 Burrows Point", personFour.getAddress());
+        assertEquals("Female", personFour.getGender());
+        assertFalse(personFour.getEnabled());
     }
 
     private void mockPerson() {
