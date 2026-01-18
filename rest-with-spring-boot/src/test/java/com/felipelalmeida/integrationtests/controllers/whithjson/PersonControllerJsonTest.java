@@ -183,19 +183,11 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
     @Order(6)
     void findAllTest() throws JsonProcessingException {
 
-        specification = new RequestSpecBuilder()
-                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_ERUDIO)
-                .setBasePath("/api/person/v1/all")
-                .setPort(TestConfigs.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
-
         var content = given(specification)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .queryParams("page", 3, "size", 12, "direction", "asc")
                 .when()
-                .get()
+                .get("/all")
                 .then()
                 .statusCode(200)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -221,6 +213,44 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
         assertEquals("Curm", personFour.getLastName());
         assertEquals("34 Burrows Point", personFour.getAddress());
         assertEquals("Female", personFour.getGender());
+        assertFalse(personFour.getEnabled());
+    }
+
+    @Test
+    @Order(7)
+    void findPeopleByNameTest() throws JsonProcessingException {
+
+           var content = given(specification)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                   .pathParam("firstName", "and")
+                .queryParams("page", 0, "size", 12, "direction", "asc")
+                .when()
+                .get("/findPeopleByName/{firstName}")
+                .then()
+                .statusCode(200)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .extract()
+                .body()
+                .asString();
+
+        WrapperPersonDTO wrapper = objectMapper.readValue(content, WrapperPersonDTO.class);
+        List<PersonDTO> people = wrapper.getEmbedded().getPeople();
+
+        PersonDTO personOne = people.getFirst();
+
+        assertEquals("Alessandro", personOne.getFirstName());
+        assertEquals("McFaul", personOne.getLastName());
+        assertEquals("5 Lukken Plaza", personOne.getAddress());
+        assertEquals("Male", personOne.getGender());
+        assertTrue(personOne.getEnabled());
+
+
+        PersonDTO personFour = people.get(3);
+
+        assertEquals("Brander", personFour.getFirstName());
+        assertEquals("Besnardeau", personFour.getLastName());
+        assertEquals("81352 Melby Lane", personFour.getAddress());
+        assertEquals("Male", personFour.getGender());
         assertFalse(personFour.getEnabled());
     }
 
