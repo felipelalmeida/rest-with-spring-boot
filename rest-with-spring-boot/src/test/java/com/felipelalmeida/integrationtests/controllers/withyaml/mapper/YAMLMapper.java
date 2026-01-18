@@ -1,4 +1,4 @@
-package com.felipelalmeida.integrationtests.controllers.whithyaml.mapper;
+package com.felipelalmeida.integrationtests.controllers.withyaml.mapper;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;

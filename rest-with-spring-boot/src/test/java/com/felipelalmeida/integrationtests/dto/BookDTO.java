@@ -1,15 +1,13 @@
-package com.felipelalmeida.data.dto;
+package com.felipelalmeida.integrationtests.dto;
 
-import jakarta.persistence.*;
-import org.springframework.hateoas.RepresentationModel;
-import org.springframework.hateoas.server.core.Relation;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-@Relation(collectionRelation = "books")
-public class BookDTO extends RepresentationModel<BookDTO> implements Serializable {
+@XmlRootElement
+public class BookDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -19,8 +17,7 @@ public class BookDTO extends RepresentationModel<BookDTO> implements Serializabl
     private Double price;
     private String title;
 
-    public BookDTO() {
-    }
+    public BookDTO() {}
 
     public Long getId() {
         return id;
@@ -65,8 +62,8 @@ public class BookDTO extends RepresentationModel<BookDTO> implements Serializabl
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        BookDTO bookDTO = (BookDTO) o;
-        return Objects.equals(getId(), bookDTO.getId()) && Objects.equals(getAuthor(), bookDTO.getAuthor()) && Objects.equals(getLaunchDate(), bookDTO.getLaunchDate()) && Objects.equals(getPrice(), bookDTO.getPrice()) && Objects.equals(getTitle(), bookDTO.getTitle());
+        BookDTO book = (BookDTO) o;
+        return Objects.equals(getId(), book.getId()) && Objects.equals(getAuthor(), book.getAuthor()) && Objects.equals(getLaunchDate(), book.getLaunchDate()) && Objects.equals(getPrice(), book.getPrice()) && Objects.equals(getTitle(), book.getTitle());
     }
 
     @Override

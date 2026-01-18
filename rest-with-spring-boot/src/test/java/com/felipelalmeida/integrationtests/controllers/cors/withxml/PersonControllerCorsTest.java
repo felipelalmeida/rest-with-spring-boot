@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.felipelalmeida.config.TestConfigs;
 import com.felipelalmeida.integrationtests.dto.PersonDTO;
+import com.felipelalmeida.integrationtests.dto.wrappers.xmlandyaml.PagedModelPerson;
 import com.felipelalmeida.integrationtests.testcontainers.AbstractIntegrationTest;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -15,6 +16,8 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
@@ -301,6 +304,7 @@ class PersonControllerCorsTest extends AbstractIntegrationTest {
         var content = given(specification)
                 .contentType(MediaType.APPLICATION_XML_VALUE)
                 .accept(MediaType.APPLICATION_XML_VALUE)
+                .queryParams("page", 3, "size", 12, "direction", "asc")
                 .when()
                 .get()
                 .then()
@@ -310,28 +314,25 @@ class PersonControllerCorsTest extends AbstractIntegrationTest {
                 .body()
                 .asString();
 
-        PersonDTO[] people = objectMapper.readValue(content, PersonDTO[].class);
+        PagedModelPerson wrapper = objectMapper.readValue(content, PagedModelPerson.class);
+        List<PersonDTO> people = wrapper.getContent();
 
-        assertNotNull(people);
-        assertTrue(people.length > 0);
+        PersonDTO personOne = people.getFirst();
 
-        PersonDTO personOne = people[0];
+        assertEquals("Allin", personOne.getFirstName());
+        assertEquals("Emmot", personOne.getLastName());
+        assertEquals("7913 Lindbergh Way", personOne.getAddress());
+        assertEquals("Male", personOne.getGender());
+        assertFalse(personOne.getEnabled());
 
-        assertNotNull(personOne.getId());
-        assertNotNull(personOne.getFirstName());
-        assertNotNull(personOne.getLastName());
-        assertNotNull(personOne.getAddress());
-        assertNotNull(personOne.getGender());
-        assertNotNull(personOne.getEnabled());
 
-        PersonDTO personFour = people[3];
+        PersonDTO personFour = people.get(3);
 
-        assertNotNull(personFour.getId());
-        assertNotNull(personFour.getFirstName());
-        assertNotNull(personFour.getLastName());
-        assertNotNull(personFour.getAddress());
-        assertNotNull(personFour.getGender());
-        assertNotNull(personFour.getEnabled());
+        assertEquals("Almeria", personFour.getFirstName());
+        assertEquals("Curm", personFour.getLastName());
+        assertEquals("34 Burrows Point", personFour.getAddress());
+        assertEquals("Female", personFour.getGender());
+        assertFalse(personFour.getEnabled());
     }
 
     @Test
