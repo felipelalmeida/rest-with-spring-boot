@@ -26,6 +26,7 @@ Projeto criado para documentar e praticar o estudo de Java com Spring Boot
 - Query Params e Paginação
 - Upload e Download de arquivos
 - Importação e Exportação de arquivos Xlsx e Csv
+- JasperReports
 
 ## Curso utilizado para estudos nesse repositorio
 <a href="https://www.udemy.com/course/restful-apis-do-0-a-nuvem-com-springboot-e-docker/?srsltid=AfmBOopAZHuzTn5y7R0Nz5Y0CUv70x0ocWyvLgMnMb1mdGnyktw2c-M9/" target="_blank">
