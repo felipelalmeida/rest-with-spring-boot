@@ -31,5 +31,5 @@ public interface EmailControllerDocs {
                     @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
             }
     )
-    ResponseEntity<String> sendEmailWithAttachment(String emailRequestJson, MultipartFile multipartFile);
+    ResponseEntity<String> sendEmailWithAttachment(String emailRequestJson, MultipartFile attachment);
 }
