@@ -38,21 +38,6 @@ public class EmailSender implements Serializable {
         return this;
     }
 
-    private ArrayList<InternetAddress> getRecipients(String to) {
-        String toWithOutSpaces = to.replaceAll("\\s", "");
-        StringTokenizer tok = new StringTokenizer(toWithOutSpaces, ";");
-        ArrayList<InternetAddress> recipientsList = new ArrayList<>();
-
-        while (tok.hasMoreElements()) {
-            try {
-                recipientsList.add(new InternetAddress(tok.nextElement().toString()));
-            } catch (AddressException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return recipientsList;
-    }
-
     public EmailSender withSubject(String subject) {
         this.subject = subject;
         return this;
@@ -93,5 +78,20 @@ public class EmailSender implements Serializable {
         this.body = null;
         this.recipients = null;
         this.attachment = null;
+    }
+
+    private ArrayList<InternetAddress> getRecipients(String to) {
+        String toWithOutSpaces = to.replaceAll("\\s", "");
+        StringTokenizer tok = new StringTokenizer(toWithOutSpaces, ";");
+        ArrayList<InternetAddress> recipientsList = new ArrayList<>();
+
+        while (tok.hasMoreElements()) {
+            try {
+                recipientsList.add(new InternetAddress(tok.nextElement().toString()));
+            } catch (AddressException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return recipientsList;
     }
 }
