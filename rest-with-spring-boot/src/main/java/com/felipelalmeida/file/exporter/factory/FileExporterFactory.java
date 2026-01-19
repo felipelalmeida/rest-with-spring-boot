@@ -4,6 +4,7 @@ import com.felipelalmeida.exception.BadRequestException;
 import com.felipelalmeida.file.exporter.MediaTypes;
 import com.felipelalmeida.file.exporter.contract.FileExporter;
 import com.felipelalmeida.file.exporter.impl.CsvExporter;
+import com.felipelalmeida.file.exporter.impl.PdfExporter;
 import com.felipelalmeida.file.exporter.impl.XlsxExporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,9 @@ public class FileExporterFactory {
             return context.getBean(XlsxExporter.class);
         } else if (acceptHeader.equalsIgnoreCase(MediaTypes.APPLICATION_CSV_VALUE)) {
             return context.getBean(CsvExporter.class);
-        } else {
+        } else if (acceptHeader.equalsIgnoreCase(MediaTypes.APPLICATION_PDF_VALUE)) {
+            return context.getBean(PdfExporter.class);
+        }else {
             throw new BadRequestException();
         }
     }

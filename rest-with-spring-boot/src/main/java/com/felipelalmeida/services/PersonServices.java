@@ -6,7 +6,6 @@ import com.felipelalmeida.exception.BadRequestException;
 import com.felipelalmeida.exception.FileStorageException;
 import com.felipelalmeida.exception.RequiredObjectIsNullException;
 import com.felipelalmeida.exception.ResourceNotFoundException;
-import com.felipelalmeida.file.exporter.MediaTypes;
 import com.felipelalmeida.file.exporter.contract.FileExporter;
 import com.felipelalmeida.file.exporter.factory.FileExporterFactory;
 import com.felipelalmeida.file.importer.contract.FileImporter;
@@ -28,6 +27,7 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
@@ -72,6 +72,21 @@ public class PersonServices {
         var dto = parseObject(entity, PersonDTO.class);
         addHateoasLinks(dto);
         return dto;
+    }
+
+    public Resource exportPerson(Long id, String acceptHeader){
+        logger.info("Exporting data from one person!");
+
+        var dto = repository.findById(id)
+                .map(entity -> parseObject(entity, PersonDTO.class))
+                .orElseThrow(() -> new ResourceNotFoundException("No records found for this id!"));
+
+        try {
+            FileExporter exporter = this.exporter.getExporter(acceptHeader);
+            return exporter.exportPerson(dto);
+        } catch (Exception e) {
+            throw new RuntimeException("Error during file export!",e);
+        }
     }
 
     public Resource exportPage(Pageable pageable, String acceptHeader){
