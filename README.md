@@ -2,7 +2,7 @@
 
 Projeto criado para documentar e praticar o estudo de Java com Spring Boot
 
-### Repositorio em desenvolvimento
+### Repositorio em desenvolvimento ...
 
 ## Fundamentos trabalhados no decorrer do estudo
 
