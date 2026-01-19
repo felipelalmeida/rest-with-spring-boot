@@ -6,7 +6,6 @@ import com.felipelalmeida.exception.BadRequestException;
 import com.felipelalmeida.exception.FileStorageException;
 import com.felipelalmeida.exception.RequiredObjectIsNullException;
 import com.felipelalmeida.exception.ResourceNotFoundException;
-import com.felipelalmeida.file.exporter.MediaTypes;
 import com.felipelalmeida.file.exporter.contract.FileExporter;
 import com.felipelalmeida.file.exporter.factory.FileExporterFactory;
 import com.felipelalmeida.file.importer.contract.FileImporter;
