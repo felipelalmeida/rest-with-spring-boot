@@ -42,7 +42,7 @@ spring:
       max-request-size: 215MB
 logging:
   level:
-    root: WARN
+    root: INFO
     com.felipelalmeida: DEBUG
 spring-doc:
   paths-to-match: /api/**/v1/**
