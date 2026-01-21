@@ -51,6 +51,28 @@ public class JwtTokenProvider {
         return new TokenDTO(userName, true, now, validity, accessToken, refreshToken);
     }
 
+    public TokenDTO refreshToken(String refreshToken) {
+
+        var token = "";
+
+        if (tokenContainsBearer(refreshToken)) {
+            token = refreshToken.substring("Bearer ".length());
+        }
+
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decodedJWT = verifier.verify(token);
+
+        String userName = decodedJWT.getSubject();
+        List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
+
+
+        return createAccessToken(userName, roles);
+    }
+
+    private static boolean tokenContainsBearer(String token) {
+        return StringUtils.isNotBlank(token) && token.startsWith("Bearer ");
+    }
+
     private String getRefreshToken(String userName, List<String> roles, Date now) {
         Date refreshTokenValidity = new Date(now.getTime() + (validityInMilliseconds * 3));
         return JWT.create()
@@ -87,9 +109,9 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.isNotBlank(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring("Bearer ".length());
+        String token = request.getHeader("Authorization");
+        if (tokenContainsBearer(token)) {
+            return token.substring("Bearer ".length());
         }
 
         return null;
