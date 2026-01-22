@@ -27,7 +27,7 @@ public class AuthController implements AuthControllerDocs {
         var token = service.signIn(credentials);
         if (token == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid client request!");
 
-        return ResponseEntity.ok().body(token);
+        return token;
     }
 
     private static boolean credentialsIsInvalid(AccountCredentialsDTO credentials) {
@@ -44,7 +44,7 @@ public class AuthController implements AuthControllerDocs {
         var token = service.refreshToken(userName, refreshToken);
         if (token == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid client request!");
 
-        return ResponseEntity.ok().body(token);
+        return token;
     }
 
     private boolean parametersAreInvalid(String userName, String refreshToken) {
