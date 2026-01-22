@@ -24,12 +24,12 @@ import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
-class BookServicesTest {
+class BookServiceTest {
 
     MockBook input;
 
     @InjectMocks
-    private BookServices service;
+    private BookService service;
 
     @Mock
     BookRepository repository;

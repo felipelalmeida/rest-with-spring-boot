@@ -2,7 +2,7 @@ package com.felipelalmeida.controllers;
 
 import com.felipelalmeida.controllers.docs.BookControllerDocs;
 import com.felipelalmeida.data.dto.BookDTO;
-import com.felipelalmeida.services.BookServices;
+import com.felipelalmeida.services.BookService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -14,15 +14,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/book/v1")
 @Tag(name = "Books", description = "Endpoints for managing books")
 public class BookController implements BookControllerDocs {
 
     @Autowired
-    private BookServices service;
+    private BookService service;
 
     @GetMapping(value = "/all",
         produces = {
