@@ -1,9 +1,8 @@
 package com.felipelalmeida.controllers;
 
-import com.felipelalmeida.data.dto.PersonDTO;
+import com.felipelalmeida.controllers.docs.AuthControllerDocs;
 import com.felipelalmeida.data.dto.security.AccountCredentialsDTO;
 import com.felipelalmeida.services.AuthService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +14,13 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Authentication endpoint")
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+public class AuthController implements AuthControllerDocs {
 
     @Autowired
     AuthService service;
 
-    @Operation(summary = "Authenticates a user and returns a token")
     @PostMapping("/signin")
+    @Override
     public ResponseEntity<?> signin(@RequestBody AccountCredentialsDTO credentials){
         if (credentialsIsInvalid(credentials)) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid client request!");
 
@@ -36,8 +35,8 @@ public class AuthController {
                 || StringUtils.isBlank(credentials.getUserName());
     }
 
-    @Operation(summary = "Refresh token for authenticated user and returns a token")
     @PutMapping("/refresh/{userName}")
+    @Override
     public ResponseEntity<?> refreshToken(@PathVariable("userName") String userName,
                                           @RequestHeader("Authorization") String refreshToken){
         if (parametersAreInvalid(userName, refreshToken)) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid client request!");
@@ -61,6 +60,7 @@ public class AuthController {
                     MediaType.APPLICATION_JSON_VALUE,
                     MediaType.APPLICATION_XML_VALUE,
                     MediaType.APPLICATION_YAML_VALUE})
+    @Override
     public AccountCredentialsDTO create(@RequestBody AccountCredentialsDTO credentials) {
         return service.create(credentials);
     }
