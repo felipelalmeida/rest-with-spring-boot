@@ -1,5 +1,6 @@
 package com.felipelalmeida.controllers;
 
+import com.felipelalmeida.data.dto.PersonDTO;
 import com.felipelalmeida.data.dto.security.AccountCredentialsDTO;
 import com.felipelalmeida.services.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -7,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,6 +50,19 @@ public class AuthController {
 
     private boolean parametersAreInvalid(String userName, String refreshToken) {
         return StringUtils.isBlank(userName) || StringUtils.isBlank(refreshToken);
+    }
+
+    @PostMapping(value = "/createUser",
+            consumes = {
+                    MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_YAML_VALUE},
+            produces = {
+                    MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_YAML_VALUE})
+    public AccountCredentialsDTO create(@RequestBody AccountCredentialsDTO credentials) {
+        return service.create(credentials);
     }
 
 }

@@ -15,7 +15,7 @@ public class StartUp {
 	public static void main(String[] args) {
 		SpringApplication.run(StartUp.class, args);
 
-        generateHashPassword();
+//        generateHashPassword();
 	}
 
     private static void generateHashPassword() {
