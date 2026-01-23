@@ -3,7 +3,9 @@ package com.felipelalmeida.integrationtests.controllers.withyaml;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.felipelalmeida.config.TestConfigs;
 import com.felipelalmeida.integrationtests.controllers.withyaml.mapper.YAMLMapper;
+import com.felipelalmeida.integrationtests.dto.AccountCredentialsDTO;
 import com.felipelalmeida.integrationtests.dto.PersonDTO;
+import com.felipelalmeida.integrationtests.dto.TokenDTO;
 import com.felipelalmeida.integrationtests.dto.wrappers.xmlandyaml.PagedModelPerson;
 import com.felipelalmeida.integrationtests.testcontainers.AbstractIntegrationTest;
 import io.restassured.builder.RequestSpecBuilder;
@@ -30,25 +32,50 @@ class PersonControllerYamlTest extends AbstractIntegrationTest {
     private static RequestSpecification specification;
     private static YAMLMapper objectMapper;
     private static PersonDTO person;
+    private static TokenDTO tokenDTO;
 
     @BeforeAll
     static void setUp() {
         objectMapper = new YAMLMapper();
         person = new PersonDTO();
+        tokenDTO = new TokenDTO();
+    }
+
+    @Test
+    @Order(0)
+    void signin() {
+        AccountCredentialsDTO credentials = new AccountCredentialsDTO("leandro", "admin123");
+
+        tokenDTO = given()
+                .basePath("/auth/signin")
+                .port(TestConfigs.SERVER_PORT)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(credentials)
+                .when()
+                .post()
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .as(TokenDTO.class);
+
+        specification = new RequestSpecBuilder()
+                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_LOCAL)
+                .addHeader(TestConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenDTO.getAccessToken())
+                .setBasePath("/api/person/v1")
+                .setPort(TestConfigs.SERVER_PORT)
+                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
+                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+                .build();
+
+        assertNotNull(tokenDTO.getAccessToken());
+        assertNotNull(tokenDTO.getRefreshToken());
     }
 
     @Test
     @Order(1)
     void createTest() throws JsonProcessingException {
         mockPerson();
-
-        specification = new RequestSpecBuilder()
-                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_ERUDIO)
-                .setBasePath("/api/person/v1")
-                .setPort(TestConfigs.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
 
         var createdPerson = given().config(RestAssuredConfig.config()
                         .encoderConfig(EncoderConfig.encoderConfig()
@@ -273,6 +300,8 @@ class PersonControllerYamlTest extends AbstractIntegrationTest {
         person.setAddress("Santa Rosa - Brazil");
         person.setGender("Male");
         person.setEnabled(true);
+        person.setProfileUrl("https://github.com/felipelalmeida");
+        person.setPhotoUrl("https://github.com/felipelalmeida");
     }
 
 }
