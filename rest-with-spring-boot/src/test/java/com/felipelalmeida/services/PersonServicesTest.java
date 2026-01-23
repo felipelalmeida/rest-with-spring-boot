@@ -6,7 +6,6 @@ import com.felipelalmeida.model.Person;
 import com.felipelalmeida.repository.PersonRepository;
 import com.felipelalmeida.unittests.mapper.mocks.MockPerson;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,10 +13,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -33,6 +40,9 @@ class PersonServicesTest {
 
     @Mock
     PersonRepository repository;
+
+    @Mock
+    PagedResourcesAssembler<PersonDTO> assembler;
 
     @BeforeEach
     void setUp() {
@@ -229,12 +239,34 @@ class PersonServicesTest {
     }
 
     @Test
-    @Disabled("REASON: Still under development")
     void findAll() {
-        List<Person> list = input.mockEntityList();
-        when(repository.findAll()).thenReturn(list);
+        List<Person> mockEntityList = input.mockEntityList();
+        Page<Person> mockPage = new PageImpl<>(mockEntityList);
+        when(repository.findAll(any(Pageable.class))).thenReturn(mockPage);
 
-        List<PersonDTO> people = new ArrayList<>();
+        List<PersonDTO> mockDtoList = input.mockDTOList();
+
+        List<EntityModel<PersonDTO>> entityModels = mockDtoList.stream()
+                .map(EntityModel::of)
+                .collect(Collectors.toList());
+
+        PagedModel.PageMetadata pageMetadata = new PagedModel.PageMetadata(
+                mockPage.getSize(),
+                mockPage.getNumber(),
+                mockPage.getTotalElements(),
+                mockPage.getTotalPages()
+        );
+
+        PagedModel<EntityModel<PersonDTO>> mockPagedModel = PagedModel.of(entityModels, pageMetadata);
+        when(assembler.toModel(any(Page.class), any(Link.class))).thenReturn(mockPagedModel);
+
+
+        PagedModel<EntityModel<PersonDTO>> result = service.findAll(PageRequest.of(0, 14));
+
+        List<PersonDTO> people = result.getContent()
+                .stream()
+                .map(EntityModel::getContent)
+                .collect(Collectors.toList());
 
         assertNotNull(people);
         assertEquals(14, people.size());
